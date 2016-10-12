@@ -34,10 +34,10 @@ Since the two delays have $kd$ and $\frac{x}{b}$ in common, the packet-switched 
 
 \item To determine which stations transmitted, and the bits they sent, we multiply each element in the station's chip sequence by the received chips, and divide by 8:
 
-$$ S \cdot A = \frac{(+1 -1 +3 +1 -1 +3 +1 +1)}{8} = 1 $$
-$$ S \cdot B = \frac{(+1 -1 -3 -1 -1 -3 +1 -1)}{8} = -1 $$
-$$ S \cdot C = \frac{(+1 +1 +3 +1 -1 -3 -1 -1)}{8} = 0 $$
-$$ S \cdot D = \frac{(+1 +1 +3 -1 +1 +3 +1 -1)}{8} = 1 $$
+$$ b_A = \frac{S \cdot A}{8} = \frac{(+1 -1 +3 +1 -1 +3 +1 +1)}{8} = 1 $$
+$$ b_B = \frac{S \cdot B}{8} = \frac{(+1 -1 -3 -1 -1 -3 +1 -1)}{8} = -1 $$
+$$ b_C = \frac{S \cdot C}{8} = \frac{(+1 +1 +3 +1 -1 -3 -1 -1)}{8} = 0 $$
+$$ b_D = \frac{S \cdot D}{8} = \frac{(+1 +1 +3 -1 +1 +3 +1 -1)}{8} = 1 $$
 
 So Station A transmitted a 1, Station B transmitted a -1, Station C did not transmit, and Station D transmitted a 1.
 
@@ -66,10 +66,10 @@ For $k=10$, by the Clos theorem, since $k \geq 2n-1$, a new connection can alway
 
 \end{enumerate}
 
-\item 
-% So G(x) = x^3 + 1, degree 3
-% B(x) = 1 + x^2 + x^3 + x^4 + x^7
-% what the heck do I do from here?
+\item Given $ G(x) = x^3 + 1 $, or G = 1001, and $ D = 1001101 $, the remainder calculation is as follows:
+% Insert calc from my paper notes here
+
+% Something something show an inverted bit gets picked up - still on paper
 
 \item The checksum for 1001 1100 1010 0011 is given by:
 
