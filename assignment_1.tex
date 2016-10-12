@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage[scientific-notation=true, binary-units=true]{siunitx}
+\sisetup{per-mode=fraction}%
+\sisetup{scientific-notation=false}%
+
+\title{SYSC 4602 Assignment 2}
+\date{September 30th, 2016}
+\author{Jessica Morris \(100882290\)}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item Assuming the distance from New York to California is approximately 4000 km, the propagation delay would be:
+
+$$ d_{prop} = \frac{distance}{speed} $$
+$$ d_{prop} = \frac{ \SI{4e6}{\metre} }{ \frac{2}{3} c } $$
+$$ d_{prop} = \frac{ \SI{4e6}{\metre} }{ \SI{1.999e8}{\metre\per\second} } $$
+$$ d_{prop} \approx \SI{20000}{\micro\second} $$
+
+Since $ d_{prop} >> $ switching time, the switching time will not be a major factor.
+
+\item
+\begin{enumerate}
+
+\item The maximum number of simultaneous users requiring 150 kbps on a 3 Mbps link is given by:
+
+$$ users_{max} = \left \lfloor{\frac{\SI{3}{\mega\bit\per\second}}{\SI{150}{\kilo\bit\per\second}}} \right \rfloor $$
+$$ users_{max} = \left \lfloor{\frac{\SI{3000}{\kilo\bit\per\second}}{\SI{150}{\kilo\bit\per\second}}} \right \rfloor $$
+$$ users_{max} = 20 $$
+
+Therefore, at maximum there can be 20 simultaneous users.
+
+\item The probability that out of 120 users, 21 are transmitting simultaneously, is given by:
+
+$$ P = { n \choose r } p^{r} (1-p)^{n-r} $$
+Where n = 120, r = 21, p = 0.10.
+$$ P = { 120 \choose 21 } \times 0.10^{21} \times 0.90^{99} $$
+$$ P \approx 0.0041$$
+
+Therefore, the probability that 21 users out of 120 are transmitting simultaneously is 0.41\%.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}
+
+\item Considering that the queueing delay for the first packet will be $0$, the queueing delay for the second packet will be $\frac{L}{R}$, the queueing delay for the third packet will be $\frac{2L}{R}$... The queueing delay for the Nth packet will be $\frac{(N-1)L}{R}$. With this in mind, the average queueing time will be:
+
+$$ d_{avg} = \frac{\sum_{i=0}^{N-1} iL}{R} \times \frac{1}{N}$$
+$$ d_{avg} = \frac{L}{RN} \times \sum_{i=0}^{N-1} i $$
+$$ \sum_{i=0}^{N-1} i = \frac{1}{2}(N-1)N $$
+$$ d_{avg} = \frac{L(N-1)N}{2RN} $$
+$$ d_{avg} = \frac{L(N-1)}{2R} $$
+
+\item For $N$ packets arriving every $LN/R$ seconds, the Nth packet of the first group of packets will be transmitted after $(N-1)L/R$ seconds, meaning that when the second group of $N$ packets arrives, the first packet in this batch will have no queueing delay.
+
+Since this pattern will occur for any number of packet batches, it is suffice to say that the average queueing delay for one batch of packets is the average over all packets. The average queueing delay for one packet in one batch is given by:
+
+$$ d_{avg} = \frac{\sum_{i=0}^{N-1} iL}{R} \times \frac{1}{N} $$
+
+As previously solved, this gives us a average queueing delay of $\frac{L(N-1)}{2R}$.
+
+\end{enumerate}
+
+\item The computing time for the topologies is given by the number of topologies, $n$, times the computing time per topology, 100 ms.
+
+$$ n = 4^{(4+3+2+1)} $$
+$$ n = 1048576 $$
+$$ t_{compute} = 1048576 \times \SI{100}{\milli\second} $$
+$$ t_{compute} = \SI{104857.6}{\second} $$
+
+Therefore, the total computing time is 104857.6 seconds, or \SI{29.127}{\hour}.
+
+\item
+\begin{enumerate}
+
+\item The time taken to move the message from the host to the first packet switch is given by:
+
+$$ \frac{\SI{8e6}{\bit}}{\SI{2}{\mega\bit\per\second}} = \SI{4}{\second}$$
+
+The time taken to move the message from source host to destination host is given by:
+
+$$ t_{total} = t_{link 1} \times n_{links} $$
+$$ t_{total} = \SI{4}{\second} \times 3 $$
+$$ t_{total} = \SI{12}{\second}$$
+
+\item The time taken to move the first packet from the source host to the first packet switch is:
+
+$$ \frac{\SI{10000}{\bit}}{\SI{2}{\mega\bit\per\second}} = \SI{0.005}{\second} $$
+
+The second packet will be fully received at the first switch at the same time that the first packet will be fully received at the second switch, at \SI{0.010}{\second}.
+
+\item To move the file from source host to destination host when message segmentation is used, the total time will be:
+
+$$ t_{total} = t_{packet1} + (N-1)t_d $$
+$$ t_{total} = \SI{0.015}{\second} + (800-1)(\SI{0.005}{\second}) $$
+$$ t_{total} = \SI{4.010}{\second}$$
+
+It took almost 3 times longer, at 12 seconds, to move the file without segmentation. Therefore, segmentation provides a significant advantage.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}
+
+\item There are three varieties of RFCs:
+\begin{itemize}
+\item RFCs intended to become STDs, which document Internet Standards;
+\item RFCs intended to be adopted as BCPs, which standardize the results of community deliberations regarding statements of principle, or conclusions about what is the best way to perform an operation;
+\item "Experimental" or "Informational" RFCs.
+\end{itemize}
+
+\item An Internet Draft is a work-in-progress document, intended to be eventually published as a RFC. It contains preliminary technical specifications, discussions, research, and other technical information.
+
+\item Proposed Standard: The "least mature" of the standards. A Proposed Standard is a technically sound, well-received and well-understood specification that has not been made operational. A Proposed Standard is subject to change or retraction after more experience with the specification.
+
+Draft Standard: A Proposed Standard can be advanced to Draft Standard when the specification has had at least two code bases independently developed, and these code bases are interoperable. Interoperability demonstrates that the Standard is well-understood and reasonably stable. The Draft Standard can be considered a final specification, as it is not likely to change.
+
+Standard: An RFC which has been elevated to the Internet Standard level has achieved the highest level of technical maturity. It has been successfully deployed operationally and is generally believed to provide significant benefit to the Internet community.
+
+\item The IESG (Internet Engineering Steering Group) is the group responsible for approving specifications for the standards-track.
+
+\end{enumerate}
+
+\end{enumerate}
+\end{document}

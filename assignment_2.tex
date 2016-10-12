@@ -1,0 +1,85 @@
+\documentclass{article}
+
+\usepackage[scientific-notation=true, binary-units=true]{siunitx}
+\usepackage{amsmath}
+\sisetup{per-mode=fraction}%
+\sisetup{scientific-notation=false}%
+
+\title{SYSC 4602 Assignment 2}
+\date{September 30th, 2016}
+\author{Jessica Morris \(100882290\)}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item OC-1 speed is $ \SI{51.84}{\mega\bit\per\second} $, where one bit lasts $ \SI{1.929e-8}{\second} $. The time for the clock to drift by 1 bit is given by:
+
+$$ t_{drift} = \frac{\SI{1.929e-8}{\second}}{\SI{1}{\nano\second\per\second}}$$
+$$ t_{drift} = \SI{19.29}{\second} $$
+
+Therefore, it takes a SONET clock 19.29 seconds to drift by 1 bit at OC-1 speed. This suggests that SONET clocks should be resynchronized every $ \SI{19.29}{\second} $, but resynchronizing at half of that time should be the maximum.
+
+\item Consider that the delay for a circuit-switched network is due to the setup time, $s$, the propagation delay, $kd$, and and the transmission time, $\frac{x}{b}$. Determining the total delay for the circuit-switched network:
+
+$$ d_{total} = s + kd + \frac{x}{b} $$
+
+The delay for a packet-switched network, on the other hand, is determined by the propagation delay, $kd$, and the transmission time per hop. The transmission time per hop is given by the time for the first packet to fully transmit from source to destination, $x$ bits over $b$ bits per second, plus the time taken for $p$ packets to complete $k-1$ hops over $b$ bits per second. So, the total delay for the packet-switched network is given by:
+
+$$ d_{total} = kd + \frac{x}{b} + \frac{(k-1)p}{b} $$
+
+Since the two delays have $kd$ and $\frac{x}{b}$ in common, the packet-switched network will have a smaller delay than the circuit-switched network when $s < \frac{(k-1)p}{b}$.
+
+\item To determine which stations transmitted, and the bits they sent, we multiply each element in the station's chip sequence by the received chips, and divide by 8:
+
+$$ S \cdot A = \frac{(+1 -1 +3 +1 -1 +3 +1 +1)}{8} = 1 $$
+$$ S \cdot B = \frac{(+1 -1 -3 -1 -1 -3 +1 -1)}{8} = -1 $$
+$$ S \cdot C = \frac{(+1 +1 +3 +1 -1 -3 -1 -1)}{8} = 0 $$
+$$ S \cdot D = \frac{(+1 +1 +3 -1 +1 +3 +1 -1)}{8} = 1 $$
+
+So Station A transmitted a 1, Station B transmitted a -1, Station C did not transmit, and Station D transmitted a 1.
+
+\item
+\begin{enumerate}
+
+\item For $k=2$, the second stage of connections is the bottleneck, and blocking could occur at the first stage. Thus, for $k=2$, 8 simultaneous connections are supported.
+
+For $k=4$, since $k \geq n$, it is possible to reach a maximum of 16 simultaneous connections as long as rearrangement is allowed.
+
+For $k=10$, by the Clos theorem, since $k \geq 2n-1$, a new connection can always be added without rearrangement. Since there are only 16 inputs and 16 outputs for the ten $4 \times 4$ second-stage switches, the maximum of 16 simultaneous connections is allowed under all circumstances.
+
+\item Yes. Each input-output pair can be connected through any one of the $k$ second-stage switches, giving $k$ different ways to arrange the connections.
+
+\end{enumerate}
+
+\item
+\begin{enumerate}
+
+\item Using byte count:  00000101 01000111 11100011 11100000 01111110 (The first byte is the byte count for the frame, which is 5 including the byte for byte count.)
+
+\item Using byte stuffing: 01000111 11100011 11100000 11100000 11100000 01111110
+(This is A B ESC ESC ESC FLAG.) 
+
+\item Using bit stuffing: 01 0001 1111 0100 0110 1111 1010 1110 0000
+
+\end{enumerate}
+
+\item 
+
+\item The checksum for 1001 1100 1010 0011 is given by:
+
+$$ b_0 = 9 $$
+$$ b_1 = 12 $$
+$$ b_2 = 10 $$
+$$ b_3 = 3 $$
+$$ b_0 + b_1 + b_2 + b_3 = 36 = 6 \mod 15 $$
+$$ 6 = 0110_2 $$
+$$ -6 = 1010_2 $$
+$$ checksum = 1010 $$
+
+\item
+
+\end{enumerate}
+\end{document}
