@@ -71,9 +71,36 @@ For $k=10$, by the Clos theorem, since $k \geq 2n-1$, a new connection can alway
 \end{enumerate}
 
 \item The probability that a 4-bit error will go undetected in a $n \times k$ bit block is given by the number of ways to arrange 4 erroneous bits in a way that will not be detected by a parity check, divided by the total number of ways to arrange 4 erroneous bits in a $n \times k$ bit block. \\
+
 Starting with the more simpler part of the fraction, the number of ways to arrange 4 erroneous bits is given by the number of 4-combinations possible in a $n \times k$ bit block:
+
 $$\binom {n \times k} {4} = \frac{(nk)!}{4!(nk-4)!} $$
 
+The number of ways to arrange 4 erroneous bits in a way that will not be detected by a parity check requires some deduction first. The only way the 4 error bits will pass a parity check is if they are evenly distributed through the $n \times k$ block. This means that a row with error bits must contain an even number of flipped bits, and a column with error bits must contain an even number flipped bits. There are multiple ways to arrange the error bits to achieve this. Consider a some permutations of bit block where $n=2$ and $k=3$, where 0 represents a correct bit and 1 represents a flipped bit:
+
+\[ 1: \left( \begin{array}{ccc}
+0 & 1 & 1 \\
+0 & 1 & 1 \end{array} \right) \]
+
+\[ 2: \left( \begin{array}{ccc}
+1 & 0 & 1 \\
+1 & 0 & 1 \end{array} \right) \]
+
+\[ 3: \left( \begin{array}{ccc}
+1 & 0 & 1 \\
+0 & 1 & 1 \end{array} \right) \]
+
+Matrices 1 and 2 have undetected errors, while matrix 3 will be detected by the vertical parity check. Therefore, the flipped bits in a $n \times k$ bit block will only go undetected if they are arranged as the vertices of a rectangle. With this in mind, the number of ways 4 erroneous bits can be arranged and go undetected is given by the sum of all ways to position the top-left vertex to create a rectangle:
+
+$$ \sum_{p=1}^{k-1}(k-p) \times \sum_{q=1}^{n-1}(n-q) $$
+$$ = (\frac{1}{2}(k-1)k) \times (\frac{1}{2}(n-1)n) $$
+$$ = \frac{nk(k-1)(n-1)}{4} $$
+
+So the final probability is given by:
+
+$$ P_{undetected} = \frac{nk(k-1)(n-1)}{4 \frac{(nk)!}{4!(nk-4)!}} $$
+
+\pagebreak
 \item The checksum for 1001 1100 1010 0011 is given by:
 
 $$ b_0 = 9 $$
