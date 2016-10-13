@@ -66,12 +66,13 @@ For $k=10$, by the Clos theorem, since $k \geq 2n-1$, a new connection can alway
 \item Using byte stuffing: 01111110 01000111 11100011 11100000 11100000 11100000 01111110 01111110
 (This is FLAG A B ESC ESC ESC FLAG FLAG.) 
 
-\item Using bit stuffing: 01 0001 1111 0100 0110 1111 1010 1110 0000
+\item Using bit stuffing: 011111010 01000111 110100011 011111010 11100000 011111010
 
 \end{enumerate}
 
-\item 
-% So the answer to this is \frac{\sum_{p=0}^{k-2}\sum_{q=0}^{n-2}(k-p-1)(n-q-1)}{nk(nk-1)(nk-2)(nk-3)} but I gotta prove that besides "hurr durr I wrote a python script"
+\item The probability that a 4-bit error will go undetected in a $n \times k$ bit block is given by the number of ways to arrange 4 erroneous bits in a way that will not be detected by a parity check, divided by the total number of ways to arrange 4 erroneous bits in a $n \times k$ bit block. \\
+Starting with the more simpler part of the fraction, the number of ways to arrange 4 erroneous bits is given by the number of 4-combinations possible in a $n \times k$ bit block:
+$$\binom {n \times k} {4} = \frac{(nk)!}{4!(nk-4)!} $$
 
 \item The checksum for 1001 1100 1010 0011 is given by:
 
@@ -79,10 +80,10 @@ $$ b_0 = 9 $$
 $$ b_1 = 12 $$
 $$ b_2 = 10 $$
 $$ b_3 = 3 $$
-$$ b_0 + b_1 + b_2 + b_3 = 36 = 6 \mod 15 $$
-$$ 6 = 0110_2 $$
-$$ -6 = 1010_2 $$
-$$ checksum = 1010 $$
+$$ b_0 + b_1 + b_2 + b_3 = 34 = 4 \mod 15 $$
+$$ 4 = 0100_2 $$
+$$ -4 = 1011_2 $$
+$$ checksum = 1011 $$
 
 \item Given $G(x) = x^3 + 1$, or $G = 1001$, and $D = 1001 1101$, a 3-bit remainder must first be obtained using mod2 division:
 
