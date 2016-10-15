@@ -34,7 +34,7 @@ The delay for a packet-switched network, on the other hand, is determined by the
 
 $$ d_{total} = kd + \frac{x}{b} + \frac{(k-1)p}{b} $$
 
-Since the two delays have $kd$ and $\frac{x}{b}$ in common, the packet-switched network will have a smaller delay than the circuit-switched network when $s < \frac{(k-1)p}{b}$.
+Since the two delays have $kd$ and $\frac{x}{b}$ in common, the packet-switched network will have a smaller delay than the circuit-switched network when $s > \frac{(k-1)p}{b}$.
 
 \item To determine which stations transmitted, and the bits they sent, we multiply each element in the station's chip sequence by the received chips, and divide by 8:
 
@@ -48,9 +48,9 @@ So Station A transmitted a 1, Station B transmitted a -1, Station C did not tran
 \item
 \begin{enumerate}
 
-\item For $k=2$, the second stage of connections is the bottleneck, and blocking could occur at the first stage. Thus, for $k=2$, 8 simultaneous connections are supported.
+\item For $k=2$, the second stage of connections is the bottleneck, and blocking could occur at the first stage. For $k=2$, $nk = 8$ simultaneous connections are supported.
 
-For $k=4$, since $k \geq n$, it is possible to reach a maximum of 16 simultaneous connections as long as rearrangement is allowed.
+For $k=4$, since $k \geq n$, it is possible to reach a maximum of $nk = 16$ simultaneous connections as long as rearrangement is allowed.
 
 For $k=10$, by the Clos theorem, since $k \geq 2n-1$, a new connection can always be added without rearrangement. Since there are only 16 inputs and 16 outputs for the ten $4 \times 4$ second-stage switches, the maximum of 16 simultaneous connections is allowed under all circumstances.
 
