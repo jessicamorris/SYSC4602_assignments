@@ -1,0 +1,78 @@
+\documentclass{article}
+
+\usepackage[scientific-notation=true, binary-units=true]{siunitx}
+\usepackage{amsmath}
+\sisetup{per-mode=fraction}
+\sisetup{scientific-notation=false}
+
+\title{SYSC 4602 Assignment 3}
+\date{November 25th, 2016}
+\author{Jessica Morris \(100882290\)}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item Given a channel speed of $ \SI{56}{\kilo\bit\per\second} $ and a frame size of $ \SI{1000}{\bit} $, the frame transmission time is then:
+
+$$ F = \frac{\SI{1}{\kilo\bit}}{\SI{56}{\kilo\bit\per\second}} $$
+$$ F = \SI{1/56}{\second} = \SI{0.017857143}{\second} $$
+
+Assuming no round-trip delay, the total frame transmission time, $ X $, is simply equal to $ F $. If $ N $ stations are outputting 1 frame every $ \SI{100}{\second} $, then the load $ G $, per $ X $ seconds is:
+
+$$ G = \frac{N \text{ per 100 s}}{56 \times 100} = \frac{N}{5600} \text{ per } \SI{1/56}{\second}$$
+
+Given that the throughput of pure ALOHA is $ S = Ge^{-2G} $, to find the optimal number of stations for this channel, we take the derivative of $ S $, set it to zero, and solve for $ N $:
+
+$$ \frac{dS}{dG} = 0 = e^{-2G} - 2Ge^{-2G} $$
+$$ 0 = e^{-2G}(1-2G) $$
+$$ 0 = 1 - 2G $$
+$$ G = \frac{1}{2} $$
+$$ \frac{N}{5600} = \frac{1}{2} $$
+$$ N = 2800 $$
+
+Therefore, the optimal maximum number of stations on a $ \SI{56}{\kilo\bit\per\second} $ pure ALOHA channel is 2800 stations.
+
+\item Insert plot here
+
+\item Let $ i $ represent the number of attempts made by the stations to contend for the channel. On the first round ($ i = 1 $), there is only one backoff period (0), and there is a $ 2^{-(1-1)} = 1.0 $ chance of collision for that round. For the second round ($ i = 2 $), the backoff slots are uniformly distributed between 0 and $ 2^{2-1} - 1 = 1 $, and there is a $ 2^{-(2-1)} = 0.50 $ chance of collision for that round. For the $ (k - 1) $th round ($ i = k-1 $), the backoff slots are uniformly distributed between 0 and $ (2^{(k-1)-1} - 1) $, and there is a $ 2^{-[(k-1)-1]} $ chance of collision for that round. So, the probability of $ k-1 $ collisions up to the $ k $th contention round is given by the product of the chance of collision for each round up to the ($ k -1 $)th round:
+
+$$ \prod_{i=1}^{k-1}2^{-(i-1)} $$
+
+The probability of no collisions on the $ k $th round ($ i = k $) is given by 100\% minus the probability of collision for that round:
+
+$$ (1-2^{-(k-1)}) $$
+
+So the expression for the probability that contention ends on round $ k $ is given by:
+
+$$ P_k = (1-2^{-(k-1)}) \times \prod_{i=1}^{k-1}2^{-(i-1)} $$
+
+Simplified, knowing that $ \prod_{i=1}^{N}2^{-i} = 2^{\frac{-N \times (1 + N)}{2}}$:
+
+$$ P_k = (1-2^{-(k-1)}) \times 2^{-\frac{(k-1)(k-2)}{2}} $$
+
+Finally, the mean number of rounds per contention period is given by the expected value for the discrete random variable $ k $:
+
+$$ E[k] = \sum_{k}k \times P_k $$
+
+\item
+\begin{enumerate}
+
+\item When A is transmitting to B, no other communication can take place, because all other stations will have their transmissions interfered with by A's packet.
+
+\item When B is transmitting to A, no other communications are possible. Although station D will not see B's packet, the other stations that could transmit to/from D (A, C, and E) will interfere with B's packet, as A would also receive packets from C and E.
+
+\item When B is transmitting to C, E can transmit to D without interference. Station D cannot see B's packet, and C could not see E's packet. B would not see the packet from E, as its receiver is off when transmitting to C. E will shut off its receiver to transmit to D, so it will not have interference from B. Station A can see both packets, but because there is no communication to A, the interference does not matter.
+
+\end{enumerate}
+
+\item Uuhh he didn't teach us what the capacity of a protocol is... Read the textbook later I guess
+
+\item In the case of 80\% of traffic being generated is for stations in the LAN and 20\% for stations on the other LAN, an Ethernet switch would be preferable. The Ethernet switch only forwards a frame to the other LAN if the destination is not in the first LAN, whereas the Ethernet hub would broadcast the frame to every station on both LANs. The hub would not be very efficient if 80\% of traffic on a LAN is meant to stay local, as the hub would waste bandwidth on the other LAN by broadcasting traffic not meant for it.
+
+On the other hand, if 80\% of the traffic was meant to go to the other LAN, then the hub would be more effective, especially if the traffic is broadcast traffic; for example, an ARP request.
+
+\end{enumerate}
+\end{document}
