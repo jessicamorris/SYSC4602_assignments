@@ -3,12 +3,13 @@
 \usepackage[scientific-notation=true, binary-units=true]{siunitx}
 \usepackage{amsmath}
 \usepackage{pgfplots}
+\usepackage{pgfgantt}
 \sisetup{per-mode=fraction}
 \sisetup{scientific-notation=false}
 \pgfplotsset{compat=1.13}
 
 \title{SYSC 4602 Assignment 3}
-\date{November 25th, 2016}
+\date{November 20th, 2016}
 \author{Jessica Morris \(100882290\)}
 
 \begin{document}
@@ -20,9 +21,32 @@
 \item For pure ALOHA, maximum throughput occurs at $ G = 0.5 $, with $ S = \frac{1}{2}e $. This means a channel utilization of 0.184. This gives a usable bandwidth of $ 0.184 \times \SI{56}{\kilo\bit\per\second} = \SI{10.3}{\kilo\bit\per\second} $.
 Each station requires $ \frac{\SI{1000}{\bit}}{\SI{100}{\second}} = \SI{10}{\bit\per\second} $. Therefore, the maximum number of stations for this channel is $ \frac{\SI{10.3}{\kilo\bit\per\second}}{\SI{10}{\bit\per\second}} = 1030 $ stations.
 
-\item The number of transmissions, $ E $, is $ E = e^G $. There are $ E - 1 $ intervals between $ E $ transmissions. Each interval is, as given, 4 slots, so the delay is then $ d = 4(e^G - 1) $. Thus, the delay versus throughput curve can be plotted:
+\item The number of transmissions, $ E $, is $ E = e^G $. There are $ E - 1 $ intervals between $ E $ transmissions. Each interval is, as given, 4 slots, so the delay is then $ d = 4(e^G - 1) $. The throughput is given by $ S = Ge^{-G} $ Thus, the delay versus throughput curve can be plotted:
 
-insert plot here
+\begin{figure}[!ht]
+\centering
+\begin{tikzpicture}
+\begin{axis} [
+    xlabel={$ d = 4(e^G - 1) $},
+    ylabel={$ S = Ge^{-G} $},
+    ymin = 0
+]
+\addplot[black] table {ass3.dat};
+\end{axis}
+\end{tikzpicture}
+\caption{A plot of delay versus throughput for 4-slotted intervals, plotted from G = 0 to G = 5.}
+\end{figure}
+
+% MATLAB to generate the data:
+%d = @(G) 4*(exp(G) - 1);
+%S = @(G) G*exp(-G);
+%
+%fileID = fopen('Newfile.m','w');
+%fprintf(fileID, "%6s\t%6s\n", "d", "S");
+%for G = 0 : 0.1 : 5
+%    fprintf(fileID, "%6.1f\t%1.6f\n", d(G), S(G));
+%end
+%fclose(fileID);
 
 \item Let $ i $ represent the number of attempts made by the stations to contend for the channel. On the first round ($ i = 1 $), there is only one backoff period (0), and there is a $ 2^{-(1-1)} = 1.0 $ chance of collision for that round. For the second round ($ i = 2 $), the backoff slots are uniformly distributed between 0 and $ 2^{2-1} - 1 = 1 $, and there is a $ 2^{-(2-1)} = 0.50 $ chance of collision for that round. For the $ (k - 1) $th round ($ i = k-1 $), the backoff slots are uniformly distributed between 0 and $ (2^{(k-1)-1} - 1) $, and there is a $ 2^{-[(k-1)-1]} $ chance of collision for that round. So, the probability of $ k-1 $ collisions up to the $ k $th contention round is given by the product of the chance of collision for each round up to the ($ k -1 $)th round:
 
@@ -57,13 +81,36 @@ $$ E[k] = \sum_{k}k \times P_k $$
 
 \item In the distributed coordination function in IEEE 802.11, a sender station contends for the channel by sending a Request-To-Send frame to the receiver. The sender will capture the channel if and only if it receives a Clear-To-Send frame from the receiver. The sender will not know if it succeeded until after the delays due to DIFS, the time to send RTS, SIFS, and the time to send CTS. The sender knows it is not clear to send if the CTS frame doesn't arrive after this detection time.
 
+\begin{figure}[!ht]
+\centering
+\begin{ganttchart}[
+    x unit = 1cm,
+    inline,
+    vgrid,
+    hgrid,
+    bar label font=\footnotesize
+]{1}{10}
+    \gantttitle{Contention Slot}{4}
+    \gantttitle{Data Transmission}{6}\\
+    \ganttgroup[inline=false,group/.style={draw=none, fill=none}]{Src}{2,0}{25,0}
+    \ganttbar{DIFS}{1}{1}
+    \ganttbar{RTS}{2}{2}
+    \ganttbar{SIFS}{5}{5}
+    \ganttbar{Data}{6}{8} \ganttnewline
+    \ganttgroup[inline=false,group/.style={draw=none, fill=none}]{Dest}{2,0}{25,0}
+    \ganttbar{SIFS}{3}{3}
+    \ganttbar{CTS}{4}{4}
+    \ganttbar{SIFS}{9}{9}
+    \ganttbar{ACK}{10}{10}
+\end{ganttchart}
+\caption{A timeline of events for the DCF in IEEE 802.11.}
+\end{figure}
+
 This is analogous to how detection time in CSMA-CD is given by $ 2t_{prop} $. Continuing with this analysis, assume that like in CSMA-CD, each station has a probability $ p $ to send. The probability of successful transmission is maximized when $ p = \frac{1}{n} $, giving a probability of success $ P_{max} = \frac{1}{e}$, and the mean number of contention slots in a contention period is $ e $, like the mean number of minislots to successfully send.
 
-The maximum throughput occurs when all of the channel time is spent in transmission period (given by $ T_{data} + 2SIFS + T_{ack} $) followed by contention intervals (given by $ (DIFS + T_{rts} + SIFS + T_{cts}) $ times an average of $ e $ intervals). Thus, the capacity is given by:
+The maximum throughput occurs when all of the channel time is spent in transmission period (given by $ T_{data} + 2SIFS + T_{ack} $) followed by contention intervals (given by $ DIFS + T_{rts} + SIFS + T_{cts} $ times an average of $ e $ intervals). Thus, the capacity is given by:
 
-$$ p_{max} = \frac{T_{data}}{T_{data} + 2SIFS + T_{ack} + e(DIFS + T_{rts} + SIFS + T_{cts})} $$
-
-include pretty timeline plot here
+$$ \rho_{max} = \frac{T_{data}}{T_{data} + 2SIFS + T_{ack} + e(DIFS + T_{rts} + SIFS + T_{cts})} $$
 
 \item In the case of 80\% of traffic being generated is for stations in the LAN and 20\% for stations on the other LAN, an Ethernet switch would be preferable. The Ethernet switch only forwards a frame to the other LAN if the destination is not in the first LAN, whereas the Ethernet hub would broadcast the frame to every station on both LANs. The hub would not be very efficient if 80\% of traffic on a LAN is meant to stay local, as the hub would waste bandwidth on the other LAN by broadcasting traffic not meant for it.
 
