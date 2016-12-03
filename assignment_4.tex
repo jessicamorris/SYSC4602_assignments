@@ -1,0 +1,151 @@
+\documentclass{article}
+
+\usepackage[scientific-notation=true, binary-units=true]{siunitx}
+\usepackage{amsmath}
+\usepackage{tree-dvips}
+\usepackage{bytefield}
+\sisetup{per-mode=fraction}
+\sisetup{scientific-notation=false}
+
+\title{SYSC 4602 Assignment 4}
+\date{December 9th, 2016}
+\author{Jessica Morris \(100882290\)}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+
+\item Tabulating the distance vectors from B, D, and E, while taking into account C's distance from each of them gives the distance table:
+
+\begin{center}
+\begin{tabular}{ c|c|c|c }
+    & B & D & E \\
+    \hline
+    A & 11 & 19 & 12 \\ \hline
+    B & 6 & 15 & 11 \\ \hline
+    D & 18 & 3 & 14 \\ \hline
+    E & 12 & 12 & 5 \\ \hline
+    F & 8 & 13 & 9 \\ \hline
+\end{tabular}
+\end{center}
+
+Picking the minimum values from each row gives the new vector table:
+\begin{center}
+\begin{tabular}{ c|c }
+    & Distance, Next Hop \\
+    \hline
+    A & 11, B \\ \hline
+    B & 6, B \\ \hline
+    D & 3, D \\ \hline
+    E & 5, E \\ \hline
+    F & 8, B \\ \hline
+\end{tabular}
+\end{center}
+
+\item
+\begin{enumerate}
+
+\item Running the Dijkstra algorithm from Node 4 gives the following results:
+\begin{center}
+\begin{tabular}{ |c|c|c|c|c|c|c| }
+    Step & Visited Set &  \multicolumn{5}{c|}{Node Distance} \\
+     & & 1 & 2 & 3 & 5 & 6 \\
+    \hline
+    0 & \{4\} & 5 & 1 & 2 & 3 & $\infty$ \\ \hline
+    1 & \{4, 1\} & 5 & 1 & 2 & 3 & $\infty$ \\ \hline
+    2 & \{4, 1, 2\} & 4 & 1 & 2 & 3 & $\infty$ \\ \hline
+    3 & \{4, 1, 2, 3\} & 4 & 1 & 2 & 3 & 3 \\ \hline
+    4 & \{4, 1, 2, 3, 5\} & 4 & 1 & 2 & 3 & 3 \\ \hline
+    5& \{4, 1, 2, 3, 5, 6\} & 4 & 1 & 2 & 3 & 3 \\ \hline
+\end{tabular}
+\end{center}
+
+The shortest paths from Node 4 to other nodes are:
+\begin{center}
+\begin{tabular}{ c|c }
+    Destination & Path\\
+    \hline
+    1 & $ 4 \rightarrow 2 \rightarrow 1 $ \\ \hline
+    2 & $ 4 \rightarrow 2 $ \\ \hline
+    3 & $ 4 \rightarrow 3 $ \\ \hline
+    5 & $ 4 \rightarrow 5 $ \\ \hline
+    6 & $ 4 \rightarrow 3 \rightarrow 6 $ \\ \hline
+\end{tabular}
+\end{center}
+
+The spanning tree for Node 4 is:
+\begin{center}
+\begin{tabular}{ccc}
+\node{e}{1} & \node{c}{3} & \node{f}{6} \\[3ex]
+            & \node{a}{4} &             \\[3ex]
+\node{b}{2} &             & \node{d}{5}
+\end{tabular}
+\nodeconnect{a}{b}
+\nodeconnect{a}{d}
+\nodecurve[t]{a}[b]{c}{10pt}
+\nodecurve[t]{b}[b]{e}{10pt}
+\nodecurve[r]{c}[l]{f}{10pt}
+\end{center}
+
+\item The routing table for node 4 is:
+
+\begin{center}
+\begin{tabular}{ c | c }
+    Destination & Distance, Next Hop \\
+    \hline
+    1 & 4, 2 \\ \hline
+    2 & 1, 2 \\ \hline
+    3 & 3, 2 \\ \hline
+    5 & 3, 5 \\ \hline
+    6 & 3, 3 \\ \hline
+\end{tabular}
+\end{center}
+
+\end{enumerate}
+
+\item
+\begin{enumerate}
+\item The IP addresses for the six computers in the EE department, from right to left, are 111.111.1.1, 111.111.1.2, 111.111.1.3, 111.111.1.4, 111.111.1.5, 111.111.1.6. The subnet mask is 111.111.1.0/24.
+The IP addresses for the six computers in the CS department, from right to left, are 111.111.2.1, 111.111.2.2, 111.111.2.3, 111.111.2.4, 111.111.2.5, 111.111.2.6. The subnet mask is 111.111.2.0/24.
+The IP addresses of the router interface are [FIX ME]
+\item The steps taken to transfer an IP datagram from an EE host on the left switch to an EE host on the right switch are:
+\begin{itemize}
+\item FIX ME
+\end{itemize}
+\item The steps taken to transfer an IP datagram from an EE host on the left switch to a CS host on the right switch are:
+\begin{itemize}
+\item FIX ME
+\end{itemize}
+\end{enumerate}
+
+\item It is sufficient to add one new table entry: 29.18.0.0/22 for the new block. If an incoming packet's destination matches both 29.18.0.0/17 and 29.18.0.0/22, then the more specific rule (/22) will apply.
+
+\item The hosts can be grouped as follows:
+% n.b.  129.99.0.0/16 is class B address
+
+THIS IS WRONG. IDK IF THIS QUESTION IS EVEN POSSIBLE WITH THE "SINGLE PREFIX" REQUIREMENTS.
+\begin{itemize}
+\item Legal has 120 hosts, Accounting has 370 hosts, HQ has 1580 hosts, Engineering has 200 hosts, Sales has 760 hosts, Operations1 has 2150 hosts, Operations2 has 975 hosts.
+\item Chicago Campus Building 1 has 490 hosts, Chicago Campus Building 2 has 1780 hosts, Toronto has 75 hosts, Boston has 110 hosts, Philadelphia has 3700 hosts.
+\item AS1 has 2270 hosts, AS2 has 185 hosts, AS3 has 3700 hosts.
+\end{itemize}
+
+Working from the largest group to the smallest group:
+\begin{itemize}
+\item AS3 maps to prefix "00", AS1 maps to prefix "01", AS2 maps to prefix "10"
+\item Philadelphia maps to prefix "0", Chicago Campus Building 2 maps to prefix "10", Chicago Campus Building 1 maps to prefix "110", Boston maps to prefix "1110", Toronto maps to prefix "11110"
+\item Operations1 maps to prefix "0", HQ maps to prefix "10", Operations2 maps to prefix "110", Sales maps to prefix "1110", Accounting maps to prefix "11110", Engineering maps to prefix "111110", Legal maps to prefix "1111110".
+\end{itemize}
+
+The IP address of Host X in AS2 -> Toronto-> Sales would be given by:
+1000 0001.0110 0011.1101 1110.1110 XXXX (this only gives 16 hosts on this subnet, which is bad)
+
+\item In a way, yes, it is possible with Network Address Translation. As long as the two (or more) routers can exchange their NAT translation table information every time a new entry is added to the table. CISCO has achieved this with their HSRP protocol.
+\\ (Reference: http://www.cisco.com/c/en/us/support/docs/ip/hot-standby-router-protocol-hsrp/9234-hsrpguidetoc.html)
+
+\item No. A pair of ports sets uniquely up a single connection, so $ (1, p) \longleftrightarrow (2, q) $ is the only possible connection between the two hosts/ports. Additional TCP connections would require additional port pairs.
+
+\end{enumerate}
+\end{document}
