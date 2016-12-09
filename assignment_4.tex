@@ -4,6 +4,7 @@
 \usepackage{amsmath}
 \usepackage{tree-dvips}
 \usepackage{bytefield}
+\usepackage{multirow,tabularx}
 \sisetup{per-mode=fraction}
 \sisetup{scientific-notation=false}
 
@@ -50,6 +51,7 @@ Picking the minimum values from each row gives the new vector table:
 \item Running the Dijkstra algorithm from Node 4 gives the following results:
 \begin{center}
 \begin{tabular}{ |c|c|c|c|c|c|c| }
+    \hline
     Step & Visited Set &  \multicolumn{5}{c|}{Node Distance} \\
      & & 1 & 2 & 3 & 5 & 6 \\
     \hline
@@ -64,7 +66,8 @@ Picking the minimum values from each row gives the new vector table:
 
 The shortest paths from Node 4 to other nodes are:
 \begin{center}
-\begin{tabular}{ c|c }
+\begin{tabular}{ |c|c| }
+    \hline
     Destination & Path\\
     \hline
     1 & $ 4 \rightarrow 2 \rightarrow 1 $ \\ \hline
@@ -92,7 +95,8 @@ The spanning tree for Node 4 is:
 \item The routing table for node 4 is:
 
 \begin{center}
-\begin{tabular}{ c | c }
+\begin{tabular}{ |c|c| }
+    \hline
     Destination & Distance, Next Hop \\
     \hline
     1 & 4, 2 \\ \hline
@@ -109,40 +113,65 @@ The spanning tree for Node 4 is:
 \begin{enumerate}
 \item The IP addresses for the six computers in the EE department, from right to left, are 111.111.1.1, 111.111.1.2, 111.111.1.3, 111.111.1.4, 111.111.1.5, 111.111.1.6. The subnet mask is 111.111.1.0/24.
 The IP addresses for the six computers in the CS department, from right to left, are 111.111.2.1, 111.111.2.2, 111.111.2.3, 111.111.2.4, 111.111.2.5, 111.111.2.6. The subnet mask is 111.111.2.0/24.
-The IP addresses of the router interface are [FIX ME]
+The IP addresses of the router interface are 111.111.1.0 and 111.111.2.0, with the first one being for the subnet of the EE department, and the second one for the subnet of the CS department. Suppose that the EE department is associated with VLAN ID 01, and the CS department with VLAN ID 10.
 \item The steps taken to transfer an IP datagram from an EE host on the left switch to an EE host on the right switch are:
 \begin{itemize}
-\item FIX ME
+\item Suppose that the host "A" in EE with IP address 111.111.1.1 would like to send an IP datagram to a host "B" in EE with IP address 111.111.1.6.
+\item Host A first encapsulates the IP datagram with destination 111.111.1.6 into a frame, whose destination MAC address is equal to the MAC address of the router's interface card that connects to port 1 of the switch.
+\item Once the router receives the frame, it passes it up to the IP layer, which determines that the IP datagram should be forwarded to subnet 111.111.1.0/24 via sub-interface 111.111.1.0.
+\item The route then encapsulates the IP datagram into a frame, with 802.1q tag VLAN ID 01, and sends it to port 1.
+\item Once the right switch receives the frame on port 1, it will broadcast a who-is request to locate the IP of host B across its own ports and through the trunk line.
+\item When host B replies across the trunk link, the right switch will forward the frame through the trunk link to host B.
+\item When host B receives the datagram, it will remove the 802.1q tag.
 \end{itemize}
-\item The steps taken to transfer an IP datagram from an EE host on the left switch to a CS host on the right switch are:
-\begin{itemize}
-\item FIX ME
-\end{itemize}
+\item The steps taken to transfer an IP datagram from an EE host on the left switch to a CS host on the right switch are nearly identical, except that at the third step, the IP datagram should be forwarded to subnet 111.111.2.0/24 via sub-interface 111.111.2.0, and the VLAN ID in step 4 is 10.
 \end{enumerate}
 
 \item It is sufficient to add one new table entry: 29.18.0.0/22 for the new block. If an incoming packet's destination matches both 29.18.0.0/17 and 29.18.0.0/22, then the more specific rule (/22) will apply.
 
-\item Designing the variable-length addressing scheme for this company requires working from the least-specific tier (AS Number) towards the most-specific tier (Department). Starting with the AS Number, we assign subnets from largest AS to smallest AS:
+\item Designing the variable-length addressing scheme for this company requires working from the most-specific tier (Department) towards the least-specific tier (AS Number), and then assigning the subnets from AS Number down. For example:
 \begin{itemize}
-\item AS3 has 3700 hosts, and the smallest size block that would fit this is 4096. This requires 12 bits to specify, so AS3 is mapped to 129.99.0.0/20, and its prefix is bits 16-20 are "0000".
-\item AS1 has 2270 hosts, and the smallest size block that would fit this is also 4096. AS1 is mapped to 129.99.16.0/20, and its prefix is bits 16-20 are "0001".
-\item AS2 has 185 hosts, and the smallest size block that would fit this is 256. AS2 is mapped to 129.99.32.0/24, and its prefix is bits 16-24 are "0010 0000".
+\item The smallest block size that could support the users in Legal is 126. The smallest block size that could support the users in Accounting is 510.
+\item The smallest block size that could support Chicago Building 1 (the Legal and Accounting blocks combined) is 1022.
+\item Following this logic, the smallest block size that could support Chicago Building 2 is 4094.
+\item Finally, the smallest block size needed to fit all of AS1 is 8190.
 \end{itemize}
 
-A similar process is followed to assign the locations. For example, for AS1:
-\begin{itemize}
-\item Assigning Chicago Campus Building 2 first, as it has more hosts (1780 hosts). This will need a block size of 2048. Its subnet is then 129.99.16.0/21, and its prefix is bit 21 is set to "0".
-\item Chicago Campus Building 1 has 490 hosts, so it is allocated a 512-address block. Its subnet is 129.99.24.0/23, and its prefix is bits 21-23 are set to "100".
-\end{itemize}
+The subnets are then assigned by AS first, from largest to smallest. Then each AS subnet is sub-subnetted by location, then location subnets are split by department. The final addressing scheme is as follows:
+\begin{center}
+\begin{tabularx}{\textwidth}{ |c|c|c|c| }
+    \cline{1-4}
+    AS & Location & Department & Prefix \\ \cline{1-4}
+    \multirow{4}{*}{1} & \multirow{2}{*}{Chicago Campus Building 1} & Legal & 000-100-100 \\ \cline{3-4}
+    & & Accounting & 000-100-0 \\ \cline{2-4}
+    & \multirow{2}{*}{Chicago Campus Building 2} & HQ & 000-0-0 \\ \cline{3-4}
+    & & Engineering & 000-0-1000 \\ \cline{1-4}
+    \multirow{2}{*}{2} & Toronto & Sales & 0100 0000-1 \\ \cline{2-4}
+    & Boston & Sales & 0100 0000-0 \\ \cline{1-4}
+    \multirow{3}{*}{3} & \multirow{3}{*}{Philadelphia} & Operations1 & 001-0 \\ \cline{3-4}
+    & & Operations2 & 001-100 \\ \cline{3-4}
+    & & Sales & 001-110 \\ \cline{1-4}
+\end{tabularx}
+\end{center}
 
-The final addressing scheme is as follows:
+And the subnets and block sizes for each department are:
+\begin{center}
+\begin{tabularx}{\textwidth}{ |c|c|c|c|c| }
+    \cline{1-5}
+    AS & Location & Department & Subnet & Block Size \\ \cline{1-5}
+    \multirow{4}{*}{1} & \multirow{2}{*}{Chicago 1} & Legal & 129.99.18.0/25 & 126 \\ \cline{3-5}
+    & & Accounting & 129.99.16.0/23 & 510 \\ \cline{2-5}
+    & \multirow{2}{*}{Chicago 2} & HQ & 129.99.0.0/21 & 2046 \\ \cline{3-5}
+    & & Engineering & 129.99.8.0/24 & 254 \\ \cline{1-5}
+    \multirow{2}{*}{2} & Toronto & Sales & 129.99.64.128/25 & 126 \\ \cline{2-5}
+    & Boston & Sales & 129.99.64.0/25 & 126 \\ \cline{1-5}
+    \multirow{3}{*}{3} & \multirow{3}{*}{Philadelphia} & Operations1 & 129.99.32.0/20 & 4094 \\ \cline{3-5}
+    & & Operations2 & 129.99.48.0/22 & 1022 \\ \cline{3-5}
+    & & Sales & 129.99.52.0/22 & 1022 \\ \cline{1-5}
+\end{tabularx}
+\end{center}
 
-\begin{tabular}{ c|c|c|c|c|c|c }
-    AS Number & Subnet & Location & Subnet & Department & Subnet & Block Size \\ \hline
-    % Gonna make this pretty at home
-\end{tabular}
-
-%http://www.vlsm-calc.net/
+(Note that block sizes are in powers of 2, minus two because all 0s and all 1s are two reserved patterns.)
 
 \item In a way, yes, it is possible with Network Address Translation. As long as the two (or more) routers can exchange their NAT translation table information every time a new entry is added to the table. CISCO has achieved this with their HSRP protocol.
 \\ (Reference: http://www.cisco.com/c/en/us/support/docs/ip/hot-standby-router-protocol-hsrp/9234-hsrpguidetoc.html)
